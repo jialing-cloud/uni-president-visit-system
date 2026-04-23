@@ -3,7 +3,7 @@
 // Uni-President Visit Activity Platform
 // ==========================================
 
-const SHEET_ID = 'YOUR_GOOGLE_SHEET_ID'; // ← 請替換成你的 Google Sheet ID
+const SHEET_ID = 'https://script.google.com/macros/s/AKfycbwxsXRNge4iwHsxGKm27HvH9hPeBCwF0GtAuA-GzS4oFtTS-O1rpQvxBt0S1A88XSI2/exec'; // ← 請替換成你的 Google Sheet ID
 
 function doGet(e) {
   return HtmlService.createTemplateFromFile('index')
