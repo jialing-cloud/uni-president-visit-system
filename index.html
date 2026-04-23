@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>統一企業參訪活動專用</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+  background: #F5F5F0;
+  color: #1a1a1a;
+  min-height: 100vh;
+}
+
+.site-header {
+  background: #1E4620;
+  color: white;
+  padding: 22px 24px 18px;
+  text-align: center;
+}
+.site-header .brand {
+  font-size: 10px;
+  letter-spacing: 4px;
+  opacity: 0.6;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.site-header h1 { font-size: 21px; font-weight: 600; letter-spacing: 0.5px; }
+.site-header .subtitle { font-size: 12px; opacity: 0.6; margin-top: 3px; }
+
+.visit-banner {
+  background: #163514;
+  color: rgba(255,255,255,0.85);
+  text-align: center;
+  padding: 9px 16px;
+  font-size: 13px;
+  letter-spacing: 0.3px;
+}
+.visit-banner strong { color: #7FD98A; font-weight: 600; }
+
+.container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 20px 14px 60px;
+}
+
+/* Card */
+.card {
+  background: white;
+  border-radius: 14px;
+  border: 1px solid #E5E5E0;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+.card-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1E4620;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title::before {
+  content: '';
+  display: inline-block;
+  width: 3px; height: 13px;
+  background: #1E4620;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Form fields */
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 11px;
+  margin-bottom: 11px;
+}
+.field-row.full { grid-template-columns: 1fr; }
+@media (max-width: 460px) { .field-row { grid-template-columns: 1fr; } }
+.field-row:last-child { margin-bottom: 0; }
+
+.field { display: flex; flex-direction: column; gap: 5px; }
+label { font-size: 12px; font-weight: 600; color: #555; }
+label .label-en { font-weight: 400; color: #999; margin-left: 4px; font-size: 11px; }
+.required-mark { color: #C0392B; margin-left: 2px; }
+
+input[type="text"], input[type="date"], textarea, select {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid #D5D5CF;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #1a1a1a;
+  background: white;
+  transition: border-color 0.15s;
+  -webkit-appearance: none;
+}
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: #1E4620;
+  box-shadow: 0 0 0 3px rgba(30,70,32,0.09);
+}
+input[disabled], select[disabled] {
+  background: #F7F7F4;
+  color: #888;
+  cursor: default;
+}
+textarea { resize: vertical; min-height: 68px; }
+
+/* ── Drink grid ── */
+.drink-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+}
+@media (max-width: 400px) { .drink-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.drink-card {
+  border: 1.5px solid #E0E0DB;
+  border-radius: 12px;
+  padding: 13px 8px 11px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.14s;
+  background: white;
+  position: relative;
+  user-select: none;
+}
+.drink-card:hover { border-color: #1E4620; background: #F2F8F2; }
+.drink-card.selected {
+  border-color: #1E4620;
+  border-width: 2px;
+  background: #EDF6EE;
+}
+.drink-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 5px; right: 7px;
+  width: 17px; height: 17px;
+  background: #1E4620;
+  color: white;
+  border-radius: 50%;
+  font-size: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: bold;
+  line-height: 17px;
+}
+.drink-emoji { font-size: 26px; margin-bottom: 7px; display: block; }
+.drink-name-zh { font-size: 12px; font-weight: 600; color: #1a1a1a; line-height: 1.35; }
+.drink-name-en { font-size: 10px; color: #999; margin-top: 3px; line-height: 1.3; }
+.drink-cat {
+  display: inline-block;
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 20px;
+  margin-top: 5px;
+  font-weight: 600;
+}
+.cat-咖啡  { background: #FFF3E0; color: #B25C00; }
+.cat-茶飲  { background: #E8F5E9; color: #2E7D32; }
+.cat-星沁爽 { background: #FCE4EC; color: #AD1457; }
+.cat-星冰樂 { background: #EDE7F6; color: #512DA8; }
+.cat-冷萃  { background: #E3F2FD; color: #1565C0; }
+
+/* ── Options panel (temp + ice) ── */
+.options-panel {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #EBEBE6;
+  display: none;
+}
+.options-panel.visible { display: block; }
+
+.opt-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.opt-row:last-child { margin-bottom: 0; }
+
+.opt-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #444;
+  min-width: 100px;
+  flex-shrink: 0;
+}
+.opt-label .en { display: block; font-weight: 400; color: #999; font-size: 10px; margin-top: 1px; }
+
+.chip-group { display: flex; gap: 7px; flex-wrap: wrap; }
+.chip {
+  padding: 6px 14px;
+  border: 1.5px solid #D5D5CF;
+  border-radius: 20px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.12s;
+  background: white;
+  color: #333;
+  user-select: none;
+  white-space: nowrap;
+}
+.chip:hover { border-color: #1E4620; color: #1E4620; }
+.chip.active {
+  background: #1E4620;
+  border-color: #1E4620;
+  color: white;
+  font-weight: 600;
+}
+.chip.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.opt-note {
+  font-size: 11px;
+  color: #999;
+  font-style: italic;
+  margin-top: 6px;
+}
+
+/* ── Errors ── */
+.error-hint { font-size: 11px; color: #C0392B; margin-top: 3px; display: none; }
+.field.has-error input, .field.has-error select { border-color: #C0392B; }
+.field.has-error .error-hint { display: block; }
+.inline-error { font-size: 12px; color: #C0392B; margin-top: 8px; display: none; }
+
+/* ── Submit ── */
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background: #1E4620;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.14s, transform 0.1s;
+  letter-spacing: 0.3px;
+  margin-top: 6px;
+}
+.btn-submit:hover { background: #174018; }
+.btn-submit:active { transform: scale(0.99); }
+.btn-submit:disabled { background: #9BB89C; cursor: not-allowed; }
+
+/* ── Toast ── */
+.toast {
+  display: none;
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 999;
+  white-space: nowrap;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.14);
+}
+.toast.success { background: #1E4620; color: white; }
+.toast.error   { background: #C0392B; color: white; }
+.toast.show    { display: block; animation: fadeUp 0.25s ease; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── Spinner ── */
+.spinner {
+  display: inline-block;
+  width: 15px; height: 15px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.55s linear infinite;
+  margin-right: 7px;
+  vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Success screen ── */
+.success-screen {
+  display: none;
+  text-align: center;
+  padding: 52px 24px;
+}
+.check-icon {
+  width: 62px; height: 62px;
+  background: #1E4620;
+  border-radius: 50%;
+  margin: 0 auto 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; color: white;
+}
+.success-screen h2 { font-size: 20px; margin-bottom: 6px; }
+.success-screen p  { color: #666; font-size: 14px; line-height: 1.6; }
+.btn-again {
+  margin-top: 22px;
+  padding: 9px 26px;
+  border: 1.5px solid #1E4620;
+  background: none;
+  color: #1E4620;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.footer-note { text-align: center; font-size: 11px; color: #bbb; margin-top: 20px; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="brand">Uni-President Enterprises</div>
+  <h1>參訪活動專用平台</h1>
+  <div class="subtitle">Visitor Beverage Selection System</div>
+</header>
+
+<div class="visit-banner">
+  歡迎蒞臨 &nbsp;·&nbsp; Welcome &nbsp;·&nbsp;
+  <strong>Ohio State University</strong>
+  &nbsp;·&nbsp; 5 / 19
+</div>
+
+<div class="container">
+  <div id="form-area">
+
+    <!-- ① 活動資訊 -->
+    <div class="card">
+      <div class="card-title">活動資訊 &nbsp;<span style="font-weight:400;color:#aaa;font-size:10px;text-transform:none;letter-spacing:0">Event Info</span></div>
+      <div class="field-row">
+        <div class="field" id="f-visitDate">
+          <label>參訪日期 <span class="label-en">Visit Date</span><span class="required-mark">*</span></label>
+          <input type="date" id="visitDate" value="2026-05-19" />
+          <span class="error-hint">請選擇參訪日期 / Please select date</span>
+        </div>
+        <div class="field">
+          <label>活動名稱 <span class="label-en">Event Name</span></label>
+          <input type="text" id="eventTitle" placeholder="例：OSU 交流參訪" value="Ohio State University 參訪" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ② 貴賓資料 -->
+    <div class="card">
+      <div class="card-title">貴賓資料 &nbsp;<span style="font-weight:400;color:#aaa;font-size:10px;text-transform:none;letter-spacing:0">Guest Info</span></div>
+      <div class="field-row">
+        <div class="field" id="f-name">
+          <label>姓名 <span class="label-en">Name</span><span class="required-mark">*</span></label>
+          <input type="text" id="name" placeholder="請輸入姓名 / Full name" />
+          <span class="error-hint">請輸入姓名 / Name is required</span>
+        </div>
+        <div class="field">
+          <label>單位 <span class="label-en">Organization</span></label>
+          <input type="text" id="department" value="Ohio State University" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ③ 飲品選擇 -->
+    <div class="card">
+      <div class="card-title">飲品選擇 &nbsp;<span style="font-weight:400;color:#aaa;font-size:10px;text-transform:none;letter-spacing:0">Beverage</span></div>
+
+      <div class="drink-grid" id="drinkGrid">
+        <div style="grid-column:1/-1;text-align:center;color:#aaa;padding:20px;font-size:13px;">載入中… Loading…</div>
+      </div>
+
+      <div class="inline-error" id="drinkError">請選擇一項飲品 / Please select a beverage</div>
+
+      <!-- 溫度 + 冰塊 選項 -->
+      <div class="options-panel" id="optionsPanel">
+
+        <!-- 溫度 Temperature -->
+        <div class="opt-row" id="tempRow" style="display:none;">
+          <div class="opt-label">溫度 <span class="en">Temperature</span></div>
+          <div class="chip-group" id="tempChips">
+            <div class="chip" data-val="熱 Hot"    onclick="selectChip('temp', this)">熱 <span style="font-size:11px;opacity:.7">Hot</span></div>
+            <div class="chip" data-val="冰 Iced"   onclick="selectChip('temp', this)">冰 <span style="font-size:11px;opacity:.7">Iced</span></div>
+          </div>
+          <div class="inline-error" id="tempError" style="margin-top:0;margin-left:6px;">請選擇溫度</div>
+        </div>
+
+        <!-- 冰塊 Ice Level -->
+        <div class="opt-row" id="iceRow" style="display:none;">
+          <div class="opt-label">冰塊程度 <span class="en">Ice Level</span></div>
+          <div class="chip-group" id="iceChips">
+            <div class="chip" data-val="正常冰 Regular Ice"  onclick="selectChip('ice', this)">正常冰 <span style="font-size:11px;opacity:.7">Regular</span></div>
+            <div class="chip" data-val="少冰 Less Ice"      onclick="selectChip('ice', this)">少冰 <span style="font-size:11px;opacity:.7">Less</span></div>
+            <div class="chip" data-val="去冰 No Ice"        onclick="selectChip('ice', this)">去冰 <span style="font-size:11px;opacity:.7">No Ice</span></div>
+          </div>
+          <div class="inline-error" id="iceError" style="margin-top:0;margin-left:6px;">請選擇冰塊程度</div>
+        </div>
+
+        <div class="opt-note" id="optNote"></div>
+      </div>
+    </div>
+
+    <!-- ④ 備註 -->
+    <div class="card">
+      <div class="card-title">備註 &nbsp;<span style="font-weight:400;color:#aaa;font-size:10px;text-transform:none;letter-spacing:0">Notes</span></div>
+      <textarea id="notes" placeholder="如有特殊需求請在此備註 / Any special requests"></textarea>
+    </div>
+
+    <button class="btn-submit" id="submitBtn" onclick="handleSubmit()">確認送出 · Confirm</button>
+    <div class="footer-note">您的選擇將自動同步至活動統計系統 · Data synced to event management system</div>
+  </div>
+
+  <!-- 完成畫面 -->
+  <div class="success-screen" id="successScreen">
+    <div class="check-icon">✓</div>
+    <h2>已送出！ Order Received</h2>
+    <p id="successMsg">感謝填寫，我們已為您準備。<br>Thank you! We'll have your drink ready.</p>
+    <button class="btn-again" onclick="resetForm()">再填一份 / Submit another</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ─── State ───────────────────────────────
+  let menuItems    = [];
+  let selectedId   = null;
+  let selectedTemp = null;  // "熱 Hot" | "冰 Iced"
+  let selectedIce  = null;  // "正常冰..." | "少冰..." | "去冰..."
+
+  // ─── Init ────────────────────────────────
+  window.onload = function() {
+    google.script.run
+      .withSuccessHandler(renderMenu)
+      .withFailureHandler(() => renderMenu(null))
+      .getMenuItems();
+  };
+
+  // ─── Render drink cards ───────────────────
+  function renderMenu(items) {
+    if (!items || !items.length) {
+      items = [
+        { id: 'caramel_macchiato',     name: '焦糖瑪奇朵',              nameEn: 'Caramel Macchiato',             category: '咖啡',   emoji: '☕', tempSelect: true,  noIceSelect: false },
+        { id: 'honey_grapefruit_tea',  name: '蜜柚紅茶',                nameEn: 'Honey Grapefruit Black Tea',    category: '茶飲',   emoji: '🍵', tempSelect: true,  noIceSelect: false },
+        { id: 'strawberry_acai',       name: '草莓巴西莓檸檬風味星沁爽', nameEn: 'Strawberry Acai with Lemonade', category: '星沁爽', emoji: '🍓', tempSelect: false, noIceSelect: false },
+        { id: 'caffe_latte',           name: '那堤',                    nameEn: 'Caffè Latte',                   category: '咖啡',   emoji: '🥛', tempSelect: true,  noIceSelect: false },
+        { id: 'java_chip_frappuccino', name: '摩卡可可碎片星冰樂',       nameEn: 'Java Chip Frappuccino',         category: '星冰樂', emoji: '🍫', tempSelect: false, noIceSelect: true  },
+        { id: 'cold_brew',             name: '冷萃咖啡',                nameEn: 'Cold Brew Coffee',              category: '冷萃',   emoji: '🧊', tempSelect: false, noIceSelect: false }
+      ];
+    }
+    menuItems = items;
+
+    const grid = document.getElementById('drinkGrid');
+    grid.innerHTML = '';
+
+    items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'drink-card';
+      card.dataset.id = item.id;
+      card.innerHTML =
+        '<span class="drink-emoji">' + item.emoji + '</span>' +
+        '<div class="drink-name-zh">' + item.name + '</div>' +
+        '<div class="drink-name-en">' + item.nameEn + '</div>' +
+        '<span class="drink-cat cat-' + item.category + '">' + item.category + '</span>';
+      card.addEventListener('click', () => selectDrink(item.id));
+      grid.appendChild(card);
+    });
+  }
+
+  // ─── Drink selection ─────────────────────
+  function selectDrink(id) {
+    selectedId   = id;
+    selectedTemp = null;
+    selectedIce  = null;
+
+    document.querySelectorAll('.drink-card').forEach(c => c.classList.remove('selected'));
+    document.querySelector('.drink-card[data-id="' + id + '"]').classList.add('selected');
+    document.getElementById('drinkError').style.display = 'none';
+
+    // Reset chips
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    document.getElementById('tempError').style.display = 'none';
+    document.getElementById('iceError').style.display  = 'none';
+
+    const item = menuItems.find(m => m.id === id);
+    const panel    = document.getElementById('optionsPanel');
+    const tempRow  = document.getElementById('tempRow');
+    const iceRow   = document.getElementById('iceRow');
+    const optNote  = document.getElementById('optNote');
+
+    panel.classList.add('visible');
+
+    // Show / hide temperature row
+    if (item.tempSelect) {
+      tempRow.style.display = 'flex';
+    } else {
+      tempRow.style.display = 'none';
+    }
+
+    // Show / hide ice level row
+    if (item.noIceSelect) {
+      iceRow.style.display = 'none';
+      optNote.textContent = '星冰樂已包含冰沙，無法另行選擇冰塊程度。\nFrappuccino contains blended ice; ice level not applicable.';
+    } else {
+      // Ice row visible, but if tempSelect → wait for temp choice
+      if (item.tempSelect) {
+        iceRow.style.display = 'none';
+        optNote.textContent = '';
+      } else {
+        iceRow.style.display = 'flex';
+        optNote.textContent = '';
+      }
+    }
+  }
+
+  // ─── Chip selection ───────────────────────
+  function selectChip(type, el) {
+    const group = type === 'temp' ? '#tempChips .chip' : '#iceChips .chip';
+    document.querySelectorAll(group).forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+
+    if (type === 'temp') {
+      selectedTemp = el.dataset.val;
+      document.getElementById('tempError').style.display = 'none';
+
+      const item = menuItems.find(m => m.id === selectedId);
+      const iceRow = document.getElementById('iceRow');
+
+      if (selectedTemp === '熱 Hot') {
+        // Hot → no ice selection needed
+        iceRow.style.display = 'none';
+        selectedIce = '—';
+        document.getElementById('optNote').textContent = '';
+      } else {
+        // Iced → show ice level
+        if (!item.noIceSelect) {
+          iceRow.style.display = 'flex';
+          document.getElementById('optNote').textContent = '';
+        }
+        selectedIce = null;
+        document.querySelectorAll('#iceChips .chip').forEach(c => c.classList.remove('active'));
+      }
+    } else {
+      selectedIce = el.dataset.val;
+      document.getElementById('iceError').style.display = 'none';
+    }
+  }
+
+  // ─── Submit ───────────────────────────────
+  function handleSubmit() {
+    let valid = true;
+
+    // visitDate
+    const vd = document.getElementById('visitDate');
+    const fdVD = document.getElementById('f-visitDate');
+    if (!vd.value) { fdVD.classList.add('has-error'); valid = false; }
+    else fdVD.classList.remove('has-error');
+
+    // name
+    const nm = document.getElementById('name');
+    const fdNM = document.getElementById('f-name');
+    if (!nm.value.trim()) { fdNM.classList.add('has-error'); valid = false; }
+    else fdNM.classList.remove('has-error');
+
+    // drink
+    if (!selectedId) {
+      document.getElementById('drinkError').style.display = 'block';
+      valid = false;
+    }
+
+    if (selectedId) {
+      const item = menuItems.find(m => m.id === selectedId);
+
+      // Temperature required if tempSelect
+      if (item && item.tempSelect && !selectedTemp) {
+        document.getElementById('tempError').style.display = 'inline';
+        valid = false;
+      }
+
+      // Ice level required if iceRow is visible and not frappuccino and not hot
+      const iceRowVisible = document.getElementById('iceRow').style.display !== 'none';
+      if (iceRowVisible && !selectedIce) {
+        document.getElementById('iceError').style.display = 'inline';
+        valid = false;
+      }
+    }
+
+    if (!valid) {
+      showToast('請填寫所有必填項目 / Please complete all required fields', 'error');
+      return;
+    }
+
+    const item = menuItems.find(m => m.id === selectedId);
+    const formData = {
+      visitDate:    document.getElementById('visitDate').value,
+      eventTitle:   document.getElementById('eventTitle').value.trim(),
+      name:         document.getElementById('name').value.trim(),
+      department:   document.getElementById('department').value.trim(),
+      itemName:     item ? item.name     : selectedId,
+      itemNameEn:   item ? item.nameEn   : '',
+      itemCategory: item ? item.category : '飲料',
+      temperature:  selectedTemp || '—',
+      iceLevel:     selectedIce  || '—',
+      notes:        document.getElementById('notes').value.trim()
+    };
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>送出中… Submitting…';
+
+    google.script.run
+      .withSuccessHandler(onSuccess)
+      .withFailureHandler(onError)
+      .submitOrder(formData);
+  }
+
+  function onSuccess(result) {
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = false;
+    btn.innerHTML = '確認送出 · Confirm';
+    if (result.success) {
+      document.getElementById('form-area').style.display = 'none';
+      document.getElementById('successScreen').style.display = 'block';
+      document.getElementById('successMsg').innerHTML =
+        '感謝填寫，我們已為您準備。<br>Thank you! We\'ll have your drink ready.';
+    } else {
+      showToast(result.message || '送出失敗，請再試 / Submission failed', 'error');
+    }
+  }
+
+  function onError() {
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = false;
+    btn.innerHTML = '確認送出 · Confirm';
+    showToast('連線錯誤，請重新整理 / Connection error, please refresh', 'error');
+  }
+
+  function resetForm() {
+    selectedId = selectedTemp = selectedIce = null;
+    ['name'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('department').value = 'Ohio State University';
+    document.querySelectorAll('.drink-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    document.getElementById('optionsPanel').classList.remove('visible');
+    document.getElementById('tempRow').style.display = 'none';
+    document.getElementById('iceRow').style.display  = 'none';
+    document.getElementById('successScreen').style.display = 'none';
+    document.getElementById('form-area').style.display = 'block';
+  }
+
+  function showToast(msg, type) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    setTimeout(() => { t.className = 'toast'; }, 3500);
+  }
+</script>
+</body>
+</html>
