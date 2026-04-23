@@ -2,8 +2,8 @@
 // 統一企業參訪活動平台 - 後端主程式
 // ==========================================
 
-const SHEET_ID = 'https://script.google.com/macros/s/AKfycbwxsXRNge4iwHsxGKm27HvH9hPeBCwF0GtAuA-GzS4oFtTS-O1rpQvxBt0S1A88XSI2/exec'; // 請務必填寫
-const SHEET_REG = '活動報名';
+const SHEET_ID = '填入你的試算表ID'; // ← 務必修改這裡 [cite: 1, 2]
+const SHEET_REG = '活動報名'; 
 
 function doGet(e) {
   const type = e.parameter?.type;
@@ -21,44 +21,30 @@ function doGet(e) {
 }
 
 function getMenuItems() {
-  try {
-    const ss = SpreadsheetApp.openById(SHEET_ID);
-    const sheet = ss.getSheetByName('選單設定');
-    if (!sheet) return getDefaultMenu();
-    const data = sheet.getDataRange().getValues();
-    const items = [];
-    for (let i = 1; i < data.length; i++) {
-      if (data[i][0] && data[i][3] === '啟用') {
-        items.push({
-          id:          data[i][0],
-          name:        data[i][1],
-          nameEn:      data[i][2],
-          category:    data[i][4] || '飲料',
-          img:         data[i][5] || '', // 改為圖片網址
-          tempSelect:  data[i][6] === true || data[i][6] === 'TRUE',
-          noIceSelect: data[i][7] === true || data[i][7] === 'TRUE'
-        });
-      }
-    }
-    return items.length > 0 ? items : getDefaultMenu();
-  } catch (e) {
-    return getDefaultMenu();
-  }
+  return getDefaultMenu(); // 直接回傳帶有圖片連結的預設菜單 [cite: 8, 9]
 }
 
 function getDefaultMenu() {
-  // 請將下方的 img 網址替換成你上傳到 GitHub 的圖片連結
-  const baseImgUrl = "https://raw.githubusercontent.com/jialing-cloud/uni-president-visit-system/main/images/";
+  // 將 jialing-cloud 替換成你的 GitHub 帳號名稱 [cite: 23]
+  const base = "https://raw.githubusercontent.com/jialing-cloud/uni-president-visit-system/main/images/";
   return [
-    { id: 'caramel_macchiato',     name: '焦糖瑪奇朵',              nameEn: 'Caramel Macchiato',             category: '咖啡',   img: baseImgUrl + 'caramel_macchiato.png', tempSelect: true,  noIceSelect: false },
-    { id: 'honey_grapefruit_tea',  name: '冰蜜柚紅茶',                nameEn: 'Iced Shaken Black Tea',    category: '茶飲',   img: baseImgUrl + 'iced_tea.png', tempSelect: true,  noIceSelect: false },
-    { id: 'strawberry_acai',       name: '草莓巴西莓檸檬風味星沁爽', nameEn: 'Strawberry Acai with Lemonade', category: '星沁爽', img: baseImgUrl + 'strawberry_acai.png', tempSelect: false, noIceSelect: false },
-    { id: 'caffe_latte',           name: '那堤',                    nameEn: 'Caffè Latte',                   category: '咖啡',   img: baseImgUrl + 'latte.png', tempSelect: true,  noIceSelect: false },
-    { id: 'java_chip_frappuccino', name: '摩卡可可碎片星冰樂',       nameEn: 'Java Chip Frappuccino',         category: '星冰樂', img: baseImgUrl + 'java_chip.png', tempSelect: false, noIceSelect: true  },
-    { id: 'cold_brew',             name: '冷萃咖啡',                nameEn: 'Cold Brew Coffee',              category: '冷萃',   img: baseImgUrl + 'cold_brew.png', tempSelect: false, noIceSelect: false }
+    { id: 'm1', name: '焦糖瑪奇朵', nameEn: 'Caramel Macchiato', category: '咖啡', img: base + 'caramel.png', tempSelect: true, noIceSelect: false },
+    { id: 'm2', name: '冰蜜柚紅茶', nameEn: 'Iced Shaken Black Tea', category: '茶飲', img: base + 'iced_tea.png', tempSelect: true, noIceSelect: false },
+    { id: 'm3', name: '草莓巴西莓檸檬風味星沁爽', nameEn: 'Strawberry Acai with Lemonade', category: '星沁爽', img: base + 'strawberry.png', tempSelect: false, noIceSelect: false },
+    { id: 'm4', name: '那堤', nameEn: 'Caffè Latte', category: '咖啡', img: base + 'latte.png', tempSelect: true, noIceSelect: false },
+    { id: 'm5', name: '摩卡可可碎片星冰樂', nameEn: 'Java Chip Frappuccino', category: '星冰樂', img: base + 'java_chip.png', tempSelect: false, noIceSelect: true },
+    { id: 'm6', name: '冷萃咖啡', nameEn: 'Cold Brew Coffee', category: '冷萃', img: base + 'cold_brew.png', tempSelect: false, noIceSelect: false }
   ];
 }
 
 function submitOrder(formData) {
-  // ... (保留原本的 submitOrder 邏輯) ...
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    let sheet = ss.getSheetByName('訂單記錄') || ss.insertSheet('訂單記錄');
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(['提交時間', '參訪日期', '姓名', '單位', '品項', '溫度', '冰塊', '備註']);
+    }
+    sheet.appendRow([new Date(), formData.visitDate, formData.name, formData.department, formData.itemName, formData.temperature, formData.iceLevel, formData.notes]);
+    return { success: true };
+  } catch (e) { return { success: false, message: e.message }; }
 }
