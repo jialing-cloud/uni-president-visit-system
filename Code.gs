@@ -45,18 +45,18 @@ function getMenuItems() {
   }
 }
 
-function getDefaultMenu() {
-  // tempSelect: 可選熱/冰 | noIceSelect: 不能選冰塊程度（星冰樂）
+function getMenuItems() {
+  // 修改這裡：因為你的圖片目前在 GitHub 根目錄，所以把 images/ 刪掉
+  const base = "https://raw.githubusercontent.com/jialing-cloud/uni-president-visit-system/main/";
   return [
-    { id: 'caramel_macchiato',     name: '焦糖瑪奇朵',              nameEn: 'Caramel Macchiato',             category: '咖啡',   emoji: '☕', tempSelect: true,  noIceSelect: false },
-    { id: 'honey_grapefruit_tea',  name: '蜜柚紅茶',                nameEn: 'Honey Grapefruit Black Tea',    category: '茶飲',   emoji: '🍵', tempSelect: true,  noIceSelect: false },
-    { id: 'strawberry_acai',       name: '草莓巴西莓檸檬風味星沁爽', nameEn: 'Strawberry Acai with Lemonade', category: '星沁爽', emoji: '🍓', tempSelect: false, noIceSelect: false },
-    { id: 'caffe_latte',           name: '那堤',                    nameEn: 'Caffè Latte',                   category: '咖啡',   emoji: '🥛', tempSelect: true,  noIceSelect: false },
-    { id: 'java_chip_frappuccino', name: '摩卡可可碎片星冰樂',       nameEn: 'Java Chip Frappuccino',         category: '星冰樂', emoji: '🍫', tempSelect: false, noIceSelect: true  },
-    { id: 'cold_brew',             name: '冷萃咖啡',                nameEn: 'Cold Brew Coffee',              category: '冷萃',   emoji: '🧊', tempSelect: false, noIceSelect: false }
+    { id: 'm1', name: '焦糖瑪奇朵', nameEn: 'Caramel Macchiato', img: base + 'caramel.png' },
+    { id: 'm2', name: '冰蜜柚紅茶', nameEn: 'Iced Shaken Black Tea', img: base + 'iced_tea.png' },
+    { id: 'm3', name: '星沁爽', nameEn: 'Strawberry Acai with Lemonade', img: base + 'strawberry.png' },
+    { id: 'm4', name: '那堤', nameEn: 'Caffè Latte', img: base + 'latte.png' },
+    { id: 'm5', name: '星冰樂', nameEn: 'Java Chip Frappuccino', img: base + 'java_chip.png' },
+    { id: 'm6', name: '冷萃咖啡', nameEn: 'Cold Brew Coffee', img: base + 'cold_brew.png' }
   ];
 }
-
 // ─────────────────────────────────────────
 // 提交訂單 / Submit order
 // ─────────────────────────────────────────
